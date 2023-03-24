@@ -44,8 +44,6 @@ Gen_data3 = function(n = 100, beta, mu, Sigma1, Sigma2,ratio = 0.2){
   library(LaplacesDemon)
   q = as.numeric(ncol(Sigma1))
   X = rnorm(n)
-  #epsilon = rmvn(n, mu = rep(0,q), Sigma = Sigma1)+rbind(matrix(rep(0,n*(1-ratio)*q),ncol=q),rmvn(n*ratio,mu,Sigma2))
-  #epsilon = 0.8*rmvn(n, mu = rep(0,q), Sigma = Sigma1)+0.2*rmvn(n, mu = mu, Sigma = Sigma2)
   w =runif(1)
   if(w<1-ratio){
     epsilon = rmvn(n, mu = rep(0,q), Sigma = Sigma1)
