@@ -1,3 +1,4 @@
+#Schaid et al. (2016), Two Stage Test
 EHT_MLH = function(y,x,alpha=0.05){
   n = nrow(y)
   q = ncol(y)
@@ -32,6 +33,7 @@ EHT_MLH = function(y,x,alpha=0.05){
   return(list(index = index,beta = beta2, Trecord = Trecord, quantile = c(qchisq(df = q,1-alpha),qchisq(df = q-1,1-alpha))))
 }
 
+#Two Stage Test with combined decision function
 EHT_MLC = function(y,x,alpha=0.05){
   n = nrow(y)
   q = ncol(y)
@@ -66,6 +68,8 @@ EHT_MLC = function(y,x,alpha=0.05){
   return(list(index = index, Trecord = Trecord, quantile = c(qchisq(df = q,1-alpha),qchisq(df = q-1,1-alpha))))
 }
 
+
+#Methods of Wang et al. (2021)
 EHT_MLW = function(y,x,alpha=0.05){
   n = nrow(y)
   q = ncol(y)
@@ -102,18 +106,18 @@ EHT_MLW = function(y,x,alpha=0.05){
     beta_V[j] = beta2 - betastar
   }
   
-  likh = function(Y1,X1,beta){ #计算似然函数
+  likh = function(Y1,X1,beta){ #likelihood
     y = Y1
     x = X1
-    return(exp(-t(y-x%*%beta)%*%(y-x%*%beta))) #防止权重为负数
+    return(exp(-t(y-x%*%beta)%*%(y-x%*%beta))) #let the weights greater than 0
   }
-  Lik = sapply(c(beta2,beta_V),likh,Y1 = Y1,X1 = X1) #计算所有似然 
+  Lik = sapply(c(beta2,beta_V),likh,Y1 = Y1,X1 = X1) #likelihoods
   ww = c(1,sqrt(n)*rep(1,q))
   bic = Lik/ww
   sbic = sum(bic)
   w = bic/sbic
-  i_max = which.max(w) #最可能的子假设
-  #计算p值
+  i_max = which.max(w) #the subhypothesis with the hightest probability
+  #calculate p-value
   p_value = rep(0,q+1)
   p_value[1]=1-pchisq(Trecord[1],df = q)
   for(k in 1:q){
